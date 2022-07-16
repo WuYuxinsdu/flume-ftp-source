@@ -1,0 +1,10 @@
+org\keedio\flume\source\ftp\client\factory\SourceFactory.class
+org\keedio\flume\source\ftp\client\filters\KeedioFileFilter.class
+org\keedio\flume\source\ftp\source\utils\FTPSourceEventListener.class
+org\keedio\flume\source\ftp\metrics\SourceCounter.class
+org\keedio\flume\source\ftp\client\sources\SFTPSource.class
+org\keedio\flume\source\ftp\metrics\SourceCounterMBean.class
+org\keedio\flume\source\ftp\client\KeedioSource.class
+org\keedio\flume\source\ftp\client\sources\FTPSource.class
+org\keedio\flume\source\ftp\client\sources\FTPSSource.class
+org\keedio\flume\source\ftp\source\Source.class

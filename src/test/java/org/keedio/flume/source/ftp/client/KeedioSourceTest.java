@@ -204,6 +204,11 @@ public class KeedioSourceTest extends TestCase {
         public void disconnect() {
         }
 
+        @Override
+        public boolean rename(String name) {
+            return false;
+        }
+
         public List<Object> listElements(String dirToList) {
             return null;
         }

@@ -167,6 +167,11 @@ public class SFTPSource extends KeedioSource<ChannelSftp.LsEntry> {
     }
 
     @Override
+    public boolean rename(String name) {
+        return false;
+    }
+
+    @Override
     /**
      * @return void
      * @param String destination

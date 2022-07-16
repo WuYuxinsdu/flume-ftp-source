@@ -147,6 +147,8 @@ public abstract class KeedioSource<T> {
      */
     public abstract void disconnect();
 
+    public abstract boolean rename(String name);
+
     /**
      *
      * @param dirToList

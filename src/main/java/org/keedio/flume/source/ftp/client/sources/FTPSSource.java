@@ -103,6 +103,11 @@ public class FTPSSource extends KeedioSource<FTPFile> {
     }
 
     @Override
+    public boolean rename(String name) {
+        return false;
+    }
+
+    @Override
     /**
      * @return void
      * @param String destination

@@ -11,8 +11,10 @@ import org.keedio.flume.source.ftp.client.sources.SFTPSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
- *
  * @author Luis Lázaro lalazaro@keedio.com Keedio
  */
 public class SourceFactory {
@@ -28,7 +30,7 @@ public class SourceFactory {
     private static final boolean PROCESSINUSE = true;
     private static final Integer PROCESSINUSE_TIMEOUT = 60;
     private static final String FILE_COMPRESSION_FORMAT = null;
-    
+
 
     /**
      * Create KeedioSource
@@ -57,8 +59,8 @@ public class SourceFactory {
             case "sftp":
                 keedioSource = new SFTPSource();
                 SFTPSource sftpSource = new SFTPSource(
-                  context.getString("knownHosts"),
-                  context.getString("strictHostKeyChecking", "yes")
+                        context.getString("knownHosts"),
+                        context.getString("strictHostKeyChecking", "yes")
                 );
                 keedioSource = sftpSource;
                 initCommonParam(context);
@@ -83,6 +85,7 @@ public class SourceFactory {
 
     /**
      * initialize common parameters for all sources.
+     *
      * @param context of source
      */
     public void initCommonParam(Context context) {
@@ -97,7 +100,7 @@ public class SourceFactory {
         keedioSource.setFileName(context.getString("file.name", FILENAME_DEFAULT));
         keedioSource.setFlushLines(context.getBoolean("flushlines", FLUSHLINE_DEFAULT));
         keedioSource.setChunkSize(context.getInteger("chunk.size", CHUNKSIZE_DEFAULT));
-        keedioSource.setKeedioFilterRegex(context.getString("filter.pattern", ""));
+        keedioSource.setKeedioFilterRegex(context.getString("filter.pattern", ".*" + new SimpleDateFormat("yyyyMMdd").format(new Date()) + ".*.txt"));
         keedioSource.setRecursive(context.getBoolean("search.recursive", RECURSIVE_DEFAULT));
         keedioSource.setProcessInUse(context.getBoolean("search.processInUse", PROCESSINUSE));
         keedioSource.setProcessInUseTimeout(context.getInteger("search.processInUseTimeout", PROCESSINUSE_TIMEOUT));

@@ -11,17 +11,19 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.keedio.flume.source.ftp.client.filters.KeedioFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
 import java.util.Arrays;
+
 import org.apache.commons.net.ftp.FTP;
 
 /**
- *
  * @author Luis Lázaro lalazaro@keedio.com Keedio
  */
 public class FTPSource extends KeedioSource<FTPFile> {
@@ -60,7 +62,7 @@ public class FTPSource extends KeedioSource<FTPFile> {
             if (getBufferSize() != null) {
                 getFtpClient().setBufferSize(getBufferSize());
             }
-
+            LOGGER.info("******FTP连接成功******");
         } catch (IOException e) {
             this.setConnected(false);
             LOGGER.error("", e);
@@ -70,7 +72,6 @@ public class FTPSource extends KeedioSource<FTPFile> {
 
     /**
      * Disconnect and logout from current connection to server
-     *
      */
     @Override
     public void disconnect() {
@@ -85,12 +86,24 @@ public class FTPSource extends KeedioSource<FTPFile> {
     }
 
     @Override
+    public boolean rename(String name) {
+        try {
+            getFtpClient().rename(name, name + ".COMPLETED");
+            LOGGER.info(name + ".COMPLETED");
+            return true;
+        } catch (IOException e) {
+            LOGGER.error("rename fail" + this.getClass().getName() + " failed disconnect", e);
+            return false;
+        }
+    }
+
+    @Override
     /**
      * @return void
      * @param String destination
      */
-    public void changeToDirectory(String dir) throws IOException {        
-            ftpClient.changeWorkingDirectory(dir);        
+    public void changeToDirectory(String dir) throws IOException {
+        ftpClient.changeWorkingDirectory(dir);
     }
 
     @Override
@@ -131,7 +144,9 @@ public class FTPSource extends KeedioSource<FTPFile> {
      * @return boolean
      * @param Object to check
      */
-    public long getModifiedTime(FTPFile file) { return file.getTimestamp().getTimeInMillis(); }
+    public long getModifiedTime(FTPFile file) {
+        return file.getTimestamp().getTimeInMillis();
+    }
 
     @Override
     /**
@@ -154,9 +169,8 @@ public class FTPSource extends KeedioSource<FTPFile> {
     /**
      * This method calls completePendigCommand, mandatory for FTPClient
      *
-     * @see
-     * <a href="http://commons.apache.org/proper/commons-net/apidocs/org/apache/commons/net/ftp/FTPClient.html#completePendingCommand()">completePendigCommmand</a>
      * @return boolean
+     * @see <a href="http://commons.apache.org/proper/commons-net/apidocs/org/apache/commons/net/ftp/FTPClient.html#completePendingCommand()">completePendigCommmand</a>
      */
     @Override
     public boolean particularCommand() {
@@ -197,7 +211,6 @@ public class FTPSource extends KeedioSource<FTPFile> {
     }
 
     /**
-     *
      * @return String directory retrieved for server on connect
      * @throws java.io.IOException
      */
@@ -221,7 +234,6 @@ public class FTPSource extends KeedioSource<FTPFile> {
     }
 
     /**
-     *
      * @return object as cliente of ftpsource
      */
     @Override
@@ -237,8 +249,12 @@ public class FTPSource extends KeedioSource<FTPFile> {
     @Override
     public List<FTPFile> listElements(String dirToList, KeedioFileFilter filter) throws IOException {
         List<FTPFile> list = new ArrayList<>();
-        FTPFile[] subFiles = getFtpClient().listFiles(dirToList, filter);
-        list = Arrays.asList(subFiles);
+        FTPFile[] subFiles = getFtpClient().listFiles(dirToList);
+        for (FTPFile ftpFile : subFiles) {
+            if (filter.accept(ftpFile)) {
+                list.add(ftpFile);
+            }
+        }
         return list;
     }
 
